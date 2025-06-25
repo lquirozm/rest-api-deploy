@@ -1,0 +1,34 @@
+##Recuperar todas las peliculas
+GET http://localhost:1234/movies
+
+##Recuperar una pelicula por id
+GET http://localhost:1234/movies/1
+
+##Recuperar todas las peliculas por genero
+GET http://localhost:1234/movies?genre=action
+
+##Crear una pelicula
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+{
+  "title": "The Godfather",
+  "year": 2023,
+  "director": "John Doe",
+  "duration": 120,
+  "poster": "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+  "genre": ["Drama", "Action"]
+  
+}
+
+##Actualizar una pelicula por id
+PATCH http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+Content-Type: application/json
+
+{
+  "year": 1993
+}
+
+
+#Eliminar una pelicula por id
+DELETE http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
