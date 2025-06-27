@@ -12,7 +12,7 @@ POST http://localhost:1234/movies
 Content-Type: application/json
 
 {
-  "title": "The Godfather",
+  "title": "Fast and Furious 2",
   "year": 2023,
   "director": "John Doe",
   "duration": 120,
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ##Actualizar una pelicula por id
-PATCH http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+PATCH http://localhost:1234/movies/5611ccdf-5d7c-4535-a87d-1a4205291e39
 Content-Type: application/json
 
 {
@@ -31,4 +31,4 @@ Content-Type: application/json
 
 
 #Eliminar una pelicula por id
-DELETE http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+DELETE http://localhost:1234/movies/2aa15432-d934-42b3-8b4b-23ce53b4a874
