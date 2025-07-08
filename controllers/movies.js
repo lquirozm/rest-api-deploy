@@ -1,4 +1,5 @@
-import { MovieModel } from "../models/movie.js";
+//import { MovieModel } from "../models/local-file-system/movie.js";
+import { MovieModel } from "../models/mysql/movie.js";
 import { validateMovie, validatePartialMovie } from "../schemas/movies.js";
 
 export class MovieController {
@@ -14,7 +15,7 @@ export class MovieController {
     static async getById(req, res) {
         const { id } = req.params;
         const movie = await MovieModel.getById({ id });
-        if (!movie) {
+        if (!movie ) {
             return res.status(404).json({ error: 'Movie not found' });
         }
         res.json(movie);
