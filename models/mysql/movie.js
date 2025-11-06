@@ -1,5 +1,4 @@
 import mysql from 'mysql2/promise';
-import { fa } from 'zod/v4/locales';
 
 const config = {
     host: 'localhost',
@@ -48,7 +47,27 @@ export class MovieModel {
     } 
 
     static async create({ input }) {
+       const [uuidResult] = await connection.query('SELECT UUID() uuid;');
+       const [{ uuid }] = uuidResult;
+
+       const { title, year, director, duration, poster, rate } = input;
+       try{
+         await connection.query(
+            `INSERT INTO movies (id, title, year, director, duration, poster, rate)
+             VALUES (UUID_TO_BIN(${uuid}), ?, ?, ?, ?, ?, ?)`,
+            [title, year, director, duration, poster, rate]
+       );
+       }catch (error) {
+            console.error('Error inserting movie:', error);
+            throw error;
+       }
+       const [movies] = await connection.query(
+        `SELECT title, year, director, duration, poster, rate, BIN_TO_UUID(id) id
+         FROM movies WHERE id = UUID_TO_BIN(?)`,
+        [uuid]
+       );
        
+       return movies[0];
     }
 
     static async delete({ id }) {
