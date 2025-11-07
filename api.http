@@ -17,9 +17,12 @@ Content-Type: application/json
   "director": "John Doe",
   "duration": 120,
   "poster": "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+  "rate": 8.5,
   "genre": ["Drama", "Action"]
   
 }
+
+
 
 ##Actualizar una pelicula por id
 PATCH http://localhost:1234/movies/f7b3738d-c8e8-46ee-bb0d-5f69a185a7d4
