@@ -118,5 +118,77 @@ export class MovieModel {
     }
   }
 
-  static async update({ id, input }) {}
+  static async update({ id, input }) {
+    const { genre, ...movieData } = input;
+
+    try {
+      const [existingMovie] = await connection.query(
+        `SELECT * FROM movies WHERE id = UUID_TO_BIN(?)`,
+        [id]
+      );
+
+      if (existingMovie.length === 0) {
+        return null;
+      }
+
+      const fieldsToUpdate = Object.keys(movieData);
+
+      if (fieldsToUpdate.length > 0) {
+        const setClause = fieldsToUpdate
+          .map((field) => `${field} = ?`)
+          .join(", ");
+        const values = fieldsToUpdate.map((field) => movieData[field]);
+        values.push(id);
+
+        await connection.query(
+          `UPDATE movies SET ${setClause} WHERE id = UUID_TO_BIN(?)`,
+          values
+        );
+      }
+
+      if (genre !== undefined && Array.isArray(genre)) {
+        await connection.query(
+          `DELETE FROM movies_genre WHERE id = UUID_TO_BIN(?)`,
+          [id]
+        );
+
+        if (genre.length > 0) {
+          for (const genreName of genre) {
+            const [genreResult] = await connection.query(
+              `INSERT INTO movies_genre (movie_id, genre_id)
+                        VALUES (UUID_TO_BIN(?), (SELECT id FROM genre WHERE name = ?))`,
+              [id, genreName]
+            );
+
+            if (genreResult.affectedRows === 0) {
+              throw new Error(`Genre not found: ${genreName}`);
+            }
+          }
+        }
+      }
+
+      //Obtener la pelicula actualizada con sus generos
+      const [movies] = await connection.query(
+        `SELECT title, year, director, duration, poster, rate, BIN_TO_UUID(id) id
+           FROM movies WHERE id = UUID_TO_BIN(?)`,
+        [id]
+      );
+
+      const [genres] = await connection.query(
+        `SELECT g.name
+          FROM genre g
+          INNER JOIN movies_genre mg ON g.id = mg.genre_id
+          WHERE mg.movie_id = UUID_TO_BIN(?)`,
+        [id]
+      );
+
+      const movie = movies[0];
+      movie.genre = genres.map((g) => g.name);
+
+      return movie;
+    } catch (error) {
+      console.error("Error updating movie:", error);
+      throw error;
+    }
+  }
 }
